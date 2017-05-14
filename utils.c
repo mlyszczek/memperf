@@ -206,27 +206,33 @@ unsigned long ts2ns(void* tm)   /* time to convert to nanoseconds */
  */
 
 void bytes2jedec(
-    size_t          bytes,  /* bytes to convert */
+    float           bytes,  /* bytes to convert */
     struct jedec*   jedec)  /* bytes in jedec format */
 {
-    if (bytes < 100 * 1024l)
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    static const int    KB = 1024;
+    static const long   MB = 1024l * 1024;
+    static const float  GB = 1024.0 * 1024 * 1024;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+    if (bytes < 100 * KB)
     {
         jedec->val = bytes;
         jedec->pre = '\0';
     }
-    else if (bytes < 100 * 1024l * 1024l)
+    else if (bytes < 100l * MB)
     {
-        jedec->val = bytes / 1024l;
+        jedec->val = bytes / KB;
         jedec->pre = 'K';
     }
-    else if (bytes < 100 * 1024l * 1024l * 1024l)
+    else if (bytes < 100.0 * GB)
     {
-        jedec->val = bytes / (1024l * 1024l);
+        jedec->val = bytes / MB;
         jedec->pre = 'M';
     }
     else
     {
-        jedec->val = bytes / (1024l * 1024l * 1024l);
+        jedec->val = bytes / GB;
         jedec->pre = 'G';
     }
 }

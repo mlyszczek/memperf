@@ -85,23 +85,35 @@ static char opts_get(
 
 static void opts_print_help(void)
 {
-    printf("usage: memperf [-h | -v | options]\n""\n"
-           "arguments *MUST* be separated, ie -s -p is good while -sp is not\n"
-       "parameters must be next to argument like '-b1024' not '-b 1024'\n"
-   "\n""options:\n""\t-h           this help message\n"
+/*$off*/
+
+    printf(
+"usage: memperf [-h | -v | options]\n"
+"\n"
+"arguments *MUST* be separated, ie -s -p is good while -sp is not\n"
+"parameters must be next to argument like '-b1024' not '-b 1024'\n"
+"\n"
+"options:\n"
+"\t-h           this help message\n"
 "\t-v           prints version and exists\n"
 "\t-f           fill memory block with random data before copy\n"
 "\t-b<mbytes>   size of a single memory block\n"
 "\t-r<mbytes>   print report every 'bytes' copied\n"
 "\t-i<number>   number of intervals\n"
-"\t-m<method>   copying method:\n"
+"\t-m<method>   copying method:\n");
+
+    printf(
 "\t-c<clock>    clock to use to calculate bandwith\n"
-"\n""methods:\n"
+"\n"
+"methods:\n"
 "\tmemcpy       copy data using buildin memcpy function\n"
 "\tbbb          byte by byte copy, simple for loop\n"
-"\n""clocks:\n"
+"\n"
+"clocks:\n"
 "\trealtime     posix CLOCK_REALTIME clock is used\n"
 "\tclock        clock_t is used\n");
+
+/*$on*/
 }
 
 /*$2- Public Functions =======================================================*/
@@ -123,9 +135,9 @@ int opts_parse(
     char*   argv[]) /* array of arguments */
 {
     /*~~~~~~~~~~*/
-    long    tmp;        /* temp variable for parsing */
-    long    mul;        /* multiplication for <mbytes> arguments */
-    char*   ep;         /* error pointer of strtol function */
+    float   tmp;            /* temp variable for parsing */
+    long    mul;            /* multiplication for <mbytes> arguments */
+    char*   ep;             /* error pointer of strtol function */
     /*~~~~~~~~~~*/
 
     /* first set program options to default */
@@ -139,10 +151,10 @@ int opts_parse(
 
     while (argc--)
     {
-        /*~~~~~~~~~~~*/
-        char    opt;    /* current option */
-        char*   optarg; /* current option argument */
-        /*~~~~~~~~~~~*/
+        /*~~~~~~~~~~~~~~~*/
+        signed char opt;    /* current option */
+        char*       optarg; /* current option argument */
+        /*~~~~~~~~~~~~~~~*/
 
         optarg = (*argv) + 2;
 
@@ -176,7 +188,7 @@ int opts_parse(
         case 'r':
             HAS_OPTARG();
 
-            tmp = strtol(optarg, &ep, 10);
+            tmp = (float)strtod(optarg, &ep);
             mul = 1;
 
             if (*ep)
@@ -195,7 +207,8 @@ int opts_parse(
 
                 default:
                     fprintf(stderr,
-                            "parameter %s for argument '%c' is invalid\n", optarg,
+                            "parameter %s for argument '%c' is invalid\n",
+                            optarg,
                             opt);
                     exit(2);
                 }
@@ -219,7 +232,8 @@ int opts_parse(
 
             if (*ep)
             {
-                fprintf(stderr, "parameter %s for argument 'i' is invalid\n",
+                fprintf(stderr,
+                        "parameter %s for argument 'i' is invalid\n",
                         optarg);
                 exit(2);
             }
@@ -240,7 +254,8 @@ int opts_parse(
             }
             else
             {
-                fprintf(stderr, "parameter %s for optargument 'c' is invalid\n",
+                fprintf(stderr,
+                        "parameter %s for optargument 'c' is invalid\n",
                         optarg);
                 exit(2);
             }
@@ -260,7 +275,8 @@ int opts_parse(
             }
             else
             {
-                fprintf(stderr, "parameter %s for optargument 'm' is invalid\n",
+                fprintf(stderr,
+                        "parameter %s for optargument 'm' is invalid\n",
                         optarg);
                 exit(2);
             }
@@ -268,7 +284,9 @@ int opts_parse(
             break;
 
         default:
-            fprintf(stderr, "Unknown option: %c (%02x)\n", *optarg,
+            fprintf(stderr,
+                    "Unknown option: %c (%02x)\n",
+                    *optarg,
                     (unsigned char) *optarg);
             opts_print_help();
             exit(2);

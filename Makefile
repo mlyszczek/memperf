@@ -2,7 +2,7 @@ LIBS =
 SRCS = bench.c opts.c utils.c main.c
 MAIN = memperf
 
-STD = -std=c99 -D_POSIX_C_SOURCE=199309L
+STD = -std=c89 -D_POSIX_C_SOURCE=199309L
 WARN = -Wall -Wextra -pedantic
 CFLAGS = $(STD) $(WARN)
 

@@ -12,7 +12,7 @@
 
 struct jedec
 {
-    size_t val;
+    unsigned long val;
     char pre;
 };
 
@@ -21,6 +21,6 @@ void ts_add_diff(void *taken, void *start, void *finish);
 void *ts_new(void);
 void ts_reset(void *tm);
 unsigned long ts2ns(void *tm);
-void bytes2jedec(size_t bytes, struct jedec *jedec);
+void bytes2jedec(float bytes, struct jedec *jedec);
 
 #endif

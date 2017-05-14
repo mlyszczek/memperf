@@ -1,11 +1,13 @@
- /*$2
+/*$2
  ===============================================================================
     Licensed under BSD 2-clause license. See LICENSE file for more information.
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
  ===============================================================================
  */
 
-/*$2- Include files */
+
+/*$2- Include files ==========================================================*/
+
 
 #include "utils.h"
 
@@ -14,18 +16,23 @@
 #include <string.h>
 #include <time.h>
 
-/*$2- Public functions */
+#include "opts.h"
+
+
+/*$2- Public functions =======================================================*/
+
 
 /*
- * function returns timestamp depending on the 'clk' parameter. Pointer to 'c'
- * must be apropriate in regard of 'clk', if types doesn't match, result is
- * undefinied.
- *
+ -------------------------------------------------------------------------------
+    function returns timestamp in 'tm' location depending on the clock set in
+    opts.h. If clock option set doesn't match passed 'tm' object, (like clock_t
+    for CLK_CLOCK) behaviour is undefinied
+ -------------------------------------------------------------------------------
  */
 
-void ts(void *tm)
+void ts(void* tm)   /* pointer to time where to store current timestamp */
 {
-    if (args.clock == CLK_REALTIME)
+    if (opts.clock == CLK_REALTIME)
     {
         /*
          * posix doesn't require CLOCK_MONOTONIC to be implemented, so we use
@@ -35,9 +42,12 @@ void ts(void *tm)
 
         clock_gettime(CLOCK_REALTIME, tm);
     }
-    else if (args.clock == CLK_CLOCK)
+    else if (opts.clock == CLK_CLOCK)
     {
-        clock_t *t = tm;
+        /*~~~~~~~~~~~~~~~*/
+        clock_t*    t = tm;
+        /*~~~~~~~~~~~~~~~*/
+
         *t = clock();
     }
     else
@@ -46,13 +56,20 @@ void ts(void *tm)
     }
 }
 
-void *ts_new(void)
+/*
+ -------------------------------------------------------------------------------
+    creates new object for timestamp, returned pointer should be passed to
+    free() when it is no longer needed
+ -------------------------------------------------------------------------------
+ */
+
+void* ts_new(void)
 {
-    if (args.clock == CLK_REALTIME)
+    if (opts.clock == CLK_REALTIME)
     {
         return malloc(sizeof(struct timespec));
     }
-    else if (args.clock == CLK_CLOCK)
+    else if (opts.clock == CLK_CLOCK)
     {
         return malloc(sizeof(clock_t));
     }
@@ -62,13 +79,20 @@ void *ts_new(void)
     }
 }
 
-void ts_reset(void *tm)
+/*
+ -------------------------------------------------------------------------------
+    sets pointer to zero value. Check ts() for more information regarding
+    undefinied behaviour that may occur
+ -------------------------------------------------------------------------------
+ */
+
+void ts_reset(void* tm) /* time object to zero */
 {
-    if (args.clock == CLK_REALTIME)
+    if (opts.clock == CLK_REALTIME)
     {
         memset(tm, 0, sizeof(struct timespec));
     }
-    else if (args.clock == CLK_CLOCK)
+    else if (opts.clock == CLK_CLOCK)
     {
         memset(tm, 0, sizeof(clock_t));
     }
@@ -78,16 +102,29 @@ void ts_reset(void *tm)
     }
 }
 
-void ts_add_diff(void *taken, void *start, void *finish)
-{
-    if (args.clock == CLK_REALTIME)
-    {
-        struct timespec d;
-        struct timespec *t;
-        struct timespec *s;
-        struct timespec *f;
+/*
+ -------------------------------------------------------------------------------
+    function adds difference between 'finish' and 'start' to 'tm'. Simply put
+    it is tm += finish - start; Check ts() for more information regarding
+    undefinied behaviour that may occur
+ -------------------------------------------------------------------------------
+ */
 
-        t = taken;
+void ts_add_diff(
+    void*   tm,     /* finish - start will be added here */
+    void*   start,  /* first point in time to differate */
+    void*   finish) /* second point in time to differate */
+{
+    if (opts.clock == CLK_REALTIME)
+    {
+        /*~~~~~~~~~~~~~~~~~~~~*/
+        struct timespec     d;  /* diff between finish and start */
+        struct timespec*    t;  /* tm pointer */
+        struct timespec*    s;  /* start pointer */
+        struct timespec*    f;  /* finish pointer */
+        /*~~~~~~~~~~~~~~~~~~~~*/
+
+        t = tm;
         s = start;
         f = finish;
 
@@ -111,17 +148,19 @@ void ts_add_diff(void *taken, void *start, void *finish)
             t->tv_nsec -= 1000000000;
         }
     }
-    else if (args.clock == CLK_CLOCK)
+    else if (opts.clock == CLK_CLOCK)
     {
-        clock_t *t;
-        clock_t *s;
-        clock_t *f;
+        /*~~~~~~~~~~~~*/
+        clock_t*    t;          /* tm pointer */
+        clock_t*    s;          /* start pointer */
+        clock_t*    f;          /* finish pointer */
+        /*~~~~~~~~~~~~*/
 
-        t = taken;
+        t = tm;
         s = start;
         f = finish;
 
-        *t += *f - *s;
+        *t += *f -*s;
     }
     else
     {
@@ -129,17 +168,28 @@ void ts_add_diff(void *taken, void *start, void *finish)
     }
 }
 
-unsigned long ts2ns(void *tm)
-{
-    if (args.clock == CLK_REALTIME)
-    {
-        struct timespec *t = tm;
+/*
+ -------------------------------------------------------------------------------
+    function converts 'tm' object into nanoseconds. Check ts() for more
+    information regarding undefinied behaviour that may occur
+ -------------------------------------------------------------------------------
+ */
 
-        return t->tv_sec * 1000000ll + t->tv_nsec / 1000;
-    }
-    else if (args.clock == CLK_CLOCK)
+unsigned long ts2ns(void* tm)   /* time to convert to nanoseconds */
+{
+    if (opts.clock == CLK_REALTIME)
     {
-        clock_t *t = tm;
+        /*~~~~~~~~~~~~~~~~~~~~~~~*/
+        struct timespec*    t = tm;
+        /*~~~~~~~~~~~~~~~~~~~~~~~*/
+
+        return t->tv_sec * 1000000l + t->tv_nsec / 1000;
+    }
+    else if (opts.clock == CLK_CLOCK)
+    {
+        /*~~~~~~~~~~~~~~~*/
+        clock_t*    t = tm;
+        /*~~~~~~~~~~~~~~~*/
 
         return *t / (CLOCKS_PER_SEC / 1000000);
     }
@@ -149,7 +199,15 @@ unsigned long ts2ns(void *tm)
     }
 }
 
-void bytes2jedec(size_t bytes, struct jedec *jedec)
+/*
+ -------------------------------------------------------------------------------
+    converts bytes to jedec output. ie 153600 will be converted to 150K
+ -------------------------------------------------------------------------------
+ */
+
+void bytes2jedec(
+    size_t          bytes,  /* bytes to convert */
+    struct jedec*   jedec)  /* bytes in jedec format */
 {
     if (bytes < 100 * 1024l)
     {

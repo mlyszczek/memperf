@@ -1,28 +1,64 @@
- /*$2
+/*$2
  ===============================================================================
     Licensed under BSD 2-clause license. See LICENSE file for more information.
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
  ===============================================================================
  */
 
-/*$2- Include files */
+
+/*$2- Include files ==========================================================*/
+
 
 #include "bench.h"
 
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <time.h>
 
-#include "args.h"
+#include "opts.h"
 #include "utils.h"
 
-static void bench_report(void *taken, size_t copied)
+
+/*$2- Private Macros =========================================================*/
+
+
+#define BENCH_START() \
+    for (j = 0; j <= loops; ++j) \
+    { \
+        if (opts.fill_random) \
+        { \
+            bench_fill_random(dst, opts.block_size); \
+            bench_fill_random(src, opts.block_size); \
+        } \
+ \
+        ts(start)
+
+#define BENCH_END() \
+    ts(finish); \
+    ts_add_diff(taken, start, finish); \
+}
+
+/*$2- Private Functions ======================================================*/
+
+
+/*
+ -------------------------------------------------------------------------------
+    prints benchmark report to standard output
+ -------------------------------------------------------------------------------
+ */
+
+static void bench_report(
+    void*   taken,  /* time taken copying data */
+    size_t  copied) /* number of bytes copied */
 {
-    struct jedec jd_bps;
-    struct jedec jd_copied;
-    unsigned long ns;
-    double bps;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~*/
+    struct jedec    jd_bps;     /* bytes per second in jedec format */
+    struct jedec    jd_copied;  /* number of bytes copied in jedec format */
+    unsigned long   ns;         /* time taken copying data in nanoseconds */
+    double          bps;        /* bytes per second rate */
+    /*~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     if ((ns = ts2ns(taken)) == 0)
     {
@@ -35,13 +71,23 @@ static void bench_report(void *taken, size_t copied)
     bytes2jedec(bps, &jd_bps);
     bytes2jedec(copied, &jd_copied);
 
-    printf("copied %5zu %cB, in %5lu ns, rate %5zu %cB/s\n",
-            jd_copied.val, jd_copied.pre, ns, jd_bps.val, jd_bps.pre);
+    printf("copied %5zu %cB, in %5lu ns, rate %5zu %cB/s\n", jd_copied.val,
+           jd_copied.pre, ns, jd_bps.val, jd_bps.pre);
 }
 
-static void bench_fill_random(void *p, size_t c)
+/*
+ -------------------------------------------------------------------------------
+    stores 'c' random bytes into 'p'
+ -------------------------------------------------------------------------------
+ */
+
+static void bench_fill_random(
+    void*   p,  /* location where random bytes will be stored */
+    size_t  c)  /* number of bytes to store in 'p' */
 {
-    unsigned char *m = p;
+    /*~~~~~~~~~~~~~~~~~~*/
+    unsigned char*  m = p;
+    /*~~~~~~~~~~~~~~~~~~*/
 
     while (c--)
     {
@@ -49,95 +95,93 @@ static void bench_fill_random(void *p, size_t c)
     }
 }
 
-int bench(void *p1, void *p2)
+/*$2- Public Functions =======================================================*/
+
+
+/*
+ -------------------------------------------------------------------------------
+    performs benchmark on pointers dst and src. dst and src can be heap or
+    stack allocated.
+ -------------------------------------------------------------------------------
+ */
+
+int bench(void* dst, /* destination pointer */ void* src)   /* source pointer */
 {
-    struct jedec jd_block_size;
-    struct jedec jd_report_intvl;
-    void *start;
-    void *finish;
-    void *taken;
-    size_t bytes_copied;
-    size_t loops;
-    size_t i, j, k;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    struct jedec    jd_block_size;      /* block size in jedec format */
+    struct jedec    jd_report_intvl;    /* report interval value in jedec format */
+    void*           start;              /* timer indicating benchmark start */
+    void*           finish;             /* timer indicating benchmark finish */
+    void*           taken;              /* timer for time taken on benchmark */
+    size_t          bytes_copied;       /* bytes copied in * iteration */
+    size_t          loops;              /* loops needed to copy requested bytes */
+    size_t          i;                  /* iterator for loop */
+    size_t          j;                  /* iterator for loop */
+    size_t          k;                  /* iterator for loop */
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     start = ts_new();
     finish = ts_new();
     taken = ts_new();
 
     srand(time(NULL));
-    loops = args.report_intvl / args.block_size;
-    bytes2jedec(args.block_size, &jd_block_size);
-    bytes2jedec(args.report_intvl, &jd_report_intvl);
+    loops = opts.report_intvl / opts.block_size;
+    bytes2jedec(opts.block_size, &jd_block_size);
+    bytes2jedec(opts.report_intvl, &jd_report_intvl);
 
     printf("block size: %zu %cB, report every %zu %cB, iterations %zu\n",
-            jd_block_size.val, jd_block_size.pre,
-            jd_report_intvl.val, jd_report_intvl.pre,
-            args.num_intvl);
+           jd_block_size.val, jd_block_size.pre, jd_report_intvl.val,
+           jd_report_intvl.pre, opts.num_intvl);
 
     /*
-     * for systems that uses optimistic memory allocation (like linux) p1 and p2
-     * are not really allocated just yet. p1 and p2 will be allocated when we
-     * first access them. This causes first memory copy iteration to take much
-     * longer time causing program to show wrong transfer rate. To prevent this
-     * behaviour we do a simple memory copy here, so p1 and p2 are allocated.
+     * for systems that uses optimistic memory allocation (like linux) dst
+     * and src are not really allocated just yet. dst and src will be
+     * allocated when we first access them. This causes first memory copy
+     * iteration to take much longer time causing program to show wrong
+     * transfer rate. To prevent this behaviour we do a simple memory copy
+     * here, so dst and src are allocated.
      */
-    memcpy(p1, p2, args.block_size);
 
-    for (i = 0; i != args.num_intvl; ++i)
+    memcpy(dst, src, opts.block_size);
+
+    for (i = 0, j = 0; i != opts.num_intvl; ++i)
     {
         ts_reset(taken);
 
-        switch (args.method)
+        switch (opts.method)
         {
         case METHOD_MEMCPY:
 
-            for (j = 0; j <= loops; ++j)
-            {
-                if (args.fill_random)
-                {
-                    bench_fill_random(p1, args.block_size);
-                    bench_fill_random(p2, args.block_size);
-                }
-
-                ts(start);
-                memcpy(p1, p2, args.block_size);
-                ts(finish);
-                ts_add_diff(taken, start, finish);
-            }
-
+            BENCH_START();
+            memcpy(dst, src, opts.block_size);
+            BENCH_END();
             break;
 
         case METHOD_BBB:
 
-            for (j = 0; j <= loops; ++j)
+            BENCH_START();
+
+            for (k = 0; k != opts.block_size; ++k)
             {
-                if (args.fill_random)
-                {
-                    bench_fill_random(p1, args.block_size);
-                    bench_fill_random(p2, args.block_size);
-                }
+                /*~~~~~~~~~~~~~~~*/
+                unsigned char*  s1;
+                unsigned char*  s2;
+                /*~~~~~~~~~~~~~~~*/
 
-                ts(start);
+                s1 = dst;
+                s2 = src;
 
-                for (k = 0; k != args.block_size; ++k)
-                {
-                    unsigned char *s1;
-                    unsigned char *s2;
-
-                    s1 = p1;
-                    s2 = p2;
-
-                    s1[k] = s2[k];
-                }
-
-                ts(finish);
-                ts_add_diff(taken, start, finish);
+                s1[k] = s2[k];
             }
 
+            BENCH_END();
             break;
+
+        default:
+            assert(0 && "test method not supported, should not get here");
         }
 
-        bytes_copied = j * args.block_size;
+        bytes_copied = j * opts.block_size;
         bench_report(taken, bytes_copied);
     }
 

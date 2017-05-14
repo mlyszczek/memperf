@@ -5,8 +5,8 @@
  ===============================================================================
  */
 
-#ifndef ARGS_H
-#define ARGS_H 1
+#ifndef OPTS_H
+#define OPTS_H 1
 
 #include <stddef.h>
 
@@ -22,7 +22,7 @@ enum method
     METHOD_BBB
 };
 
-struct args
+struct opts
 {
     size_t block_size;
     size_t report_intvl;
@@ -32,7 +32,7 @@ struct args
     int fill_random;
 };
 
-extern struct args args;
-int args_parse(int argc, char *argv[]);
+extern struct opts opts;
+int opts_parse(int argc, char *argv[]);
 
 #endif

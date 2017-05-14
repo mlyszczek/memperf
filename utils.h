@@ -8,7 +8,7 @@
 #ifndef UTILS_H
 #define UTILS_H 1
 
-#include "args.h"
+#include <stddef.h>
 
 struct jedec
 {

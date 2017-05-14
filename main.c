@@ -5,23 +5,39 @@
  ===============================================================================
  */
 
-/*$2- Included Files */
+
+/*$2- Included Files =========================================================*/
+
 
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "args.h"
+#include "opts.h"
 #include "bench.h"
 
-int main(int argc, char *argv[])
+
+/*
+ -------------------------------------------------------------------------------
+ -------------------------------------------------------------------------------
+ */
+
+int main(
+    int     argc,   /* */
+    char*   argv[]) /* */
 {
-    void *p1;
-    void *p2;
+    /*~~~~~~~*/
+    void*   p1;
+    void*   p2;
+    int     rc;
+    /*~~~~~~~*/
 
-    args_parse(argc, argv);
+    if ((rc = opts_parse(argc, argv)) != 0)
+    {
+        return -rc;
+    }
 
-    p1 = malloc(args.block_size);
-    p2 = malloc(args.block_size);
+    p1 = malloc(opts.block_size);
+    p2 = malloc(opts.block_size);
 
     if (p1 == NULL || p2 == NULL)
     {

@@ -22,15 +22,15 @@
 /*$2- Private macros =========================================================*/
 
 
-#define HAS_OPTARG() \
-    do \
-    { \
-        if (*optarg == '\0') \
-        { \
+#define HAS_OPTARG()                                                    \
+    do                                                                  \
+    {                                                                   \
+        if (*optarg == '\0')                                            \
+        {                                                               \
             fprintf(stderr, "missing argument for option '%c'\n", opt); \
-            exit(2); \
-        } \
-    } \
+            exit(2);                                                    \
+        }                                                               \
+    }                                                                   \
     while (0);
 
 
@@ -57,6 +57,7 @@ static void opts_reset(void)
     opts.clock = CLK_REALTIME;
     opts.method = METHOD_MEMCPY;
     opts.fill_random = 0;
+    opts.cache_size = 1 * 1024 * 1024;
 }
 
 /*
@@ -98,11 +99,13 @@ static void opts_print_help(void)
 "\t-v           prints version and exists\n"
 "\t-f           fill memory block with random data before copy\n"
 "\t-b<mbytes>   size of a single memory block\n"
-"\t-r<mbytes>   print report every 'bytes' copied\n"
+"\t-r<mbytes>   print report every 'mbytes' copied\n"
+"\t-l<mbytes>   size of the cpu cache, if 0 cache flush is disabled\n"
 "\t-i<number>   number of intervals\n"
-"\t-m<method>   copying method:\n");
+);
 
     printf(
+"\t-m<method>   copying method\n"
 "\t-c<clock>    clock to use to calculate bandwith\n"
 "\n"
 "methods:\n"
@@ -111,7 +114,8 @@ static void opts_print_help(void)
 "\n"
 "clocks:\n"
 "\trealtime     posix CLOCK_REALTIME clock is used\n"
-"\tclock        clock_t is used\n");
+"\tclock        clock_t is used\n"
+);
 
 /*$on*/
 }
@@ -186,6 +190,7 @@ int opts_parse(
 
         case 'b':
         case 'r':
+        case 'l':
             HAS_OPTARG();
 
             tmp = (float)strtod(optarg, &ep);
@@ -218,9 +223,13 @@ int opts_parse(
             {
                 opts.block_size = tmp * mul;
             }
-            else
+            else if (opt == 'r')
             {
                 opts.report_intvl = tmp * mul;
+            }
+            else
+            {
+                opts.cache_size = tmp * mul;
             }
 
             break;

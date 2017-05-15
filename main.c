@@ -24,32 +24,41 @@ int main(
     int     argc,   /* */
     char*   argv[]) /* */
 {
-    /*~~~~~~~*/
-    void*   p1;
-    void*   p2;
-    int     rc;
-    /*~~~~~~~*/
+    /*~~~~~~~~~~*/
+    void*   dst;    /* destination address for benchmarking */
+    void*   src;    /* source address for benchmarking */
+    void*   f1;     /* first pointer used to flush cpu cache */
+    void*   f2;     /* second pointer used to flush cpu cache */
+    int     rc;     /* return code */
+    /*~~~~~~~~~~*/
 
     if ((rc = opts_parse(argc, argv)) != 0)
     {
         return -rc;
     }
 
-    p1 = malloc(opts.block_size);
-    p2 = malloc(opts.block_size);
+    dst = malloc(opts.block_size);
+    src = malloc(opts.block_size);
 
-    if (p1 == NULL || p2 == NULL)
+    f1 = malloc(opts.cache_size);
+    f2 = malloc(opts.cache_size);
+
+    if (dst == NULL || src == NULL || f1 == NULL || f2 == NULL)
     {
         fprintf(stderr, "Couldn't allocate requested memory block\n");
-        free(p1);
-        free(p2);
+        free(dst);
+        free(src);
+        free(f1);
+        free(f2);
         exit(3);
     }
 
-    bench(p1, p2);
+    bench(dst, src, f1, f2);
 
-    free(p1);
-    free(p2);
+    free(dst);
+    free(src);
+    free(f1);
+    free(f2);
 
     return 0;
 }

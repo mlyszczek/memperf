@@ -24,18 +24,25 @@
 /*$2- Private Macros =========================================================*/
 
 
-#define BENCH_START() \
-    for (j = 0; j <= loops; ++j) \
-    { \
-        if (opts.fill_random) \
-        { \
+#define BENCH_START()                                \
+    for (j = 0; j <= loops; ++j)                     \
+    {                                                \
+        if (opts.fill_random)                        \
+        {                                            \
             bench_fill_random(dst, opts.block_size); \
             bench_fill_random(src, opts.block_size); \
-        } \
- \
+        }                                            \
+                                              \
+        /*
+         * this tries to flush cpu cache - provided that user set
+         * opts.cache_size big enough
+         */                                          \
+                                              \
+        memcpy(f1, f2, opts.cache_size);             \
         ts(start)
-#define BENCH_END() \
-    ts(finish); \
+
+#define BENCH_END()                    \
+    ts(finish);                        \
     ts_add_diff(taken, start, finish); \
 }
 
@@ -108,7 +115,11 @@ static void bench_fill_random(
  -------------------------------------------------------------------------------
  */
 
-int bench(void* dst, /* */ void* src)   /* */
+int bench(
+    void*   dst,    /* destination pointer */
+    void*   src,    /* source pointer */
+    void*   f1,     /* first pointer used to flush cpu cache */
+    void*   f2)     /* second pointer used to flush cpu cache */
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     struct jedec    jd_block_size;      /* block size in jedec format */
@@ -145,7 +156,7 @@ int bench(void* dst, /* */ void* src)   /* */
      * allocated when we first access them. This causes first memory copy
      * iteration to take much longer time causing program to show wrong
      * transfer rate. To prevent this behaviour we do a simple memory copy
-     * here, so dst an
+     * here, so dst
      */
 
     memcpy(dst, src, opts.block_size);

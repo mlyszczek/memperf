@@ -8,6 +8,8 @@
 #ifndef BENCH_H
 #define BENCH_H 1
 
-int bench(void *p1, void *p2);
+#include <stddef.h>
+
+int bench(void* dst, void* src, void *f1, void *f2);
 
 #endif

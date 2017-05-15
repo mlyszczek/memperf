@@ -25,6 +25,7 @@ enum method
 struct opts
 {
     size_t block_size;
+    size_t cache_size;
     unsigned long num_intvl;
     float report_intvl;
     enum clock clock;

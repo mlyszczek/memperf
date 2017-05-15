@@ -1,12 +1,9 @@
-/*$2
- ===============================================================================
-    Licensed under BSD 2-clause license. See LICENSE file for more information.
+/* ==========================================================================
+    Licensed under BSD 2clause license. See LICENSE file for more information
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
- ===============================================================================
- */
+   ========================================================================== */
 
-
-/*$2- Include Files ==========================================================*/
+/* ==== Include files ======================================================= */
 
 
 #include "opts.h"
@@ -19,7 +16,7 @@
 #include "version.h"
 
 
-/*$2- Private macros =========================================================*/
+/* ==== Private macros ====================================================== */
 
 
 #define HAS_OPTARG()                                                    \
@@ -34,45 +31,47 @@
     while (0);
 
 
-/*$2- Global Variables =======================================================*/
+/* ==== Global variables ==================================================== */
 
 
 struct opts opts;
 
 
-/*$2- Private Functions ======================================================*/
+/* ==== Private functions =================================================== */
 
 
-/*
- -------------------------------------------------------------------------------
+/* ==========================================================================
     function resets 'opts' variable to default values
- -------------------------------------------------------------------------------
- */
+   ========================================================================== */
+
 
 static void opts_reset(void)
 {
     opts.block_size = 16 * 1024;
     opts.report_intvl = 100 * 1024 * 1024;
     opts.num_intvl = 10;
+    opts.method = METHOD_MEMCPY;
+    opts.fill_random = 0;
+    opts.cache_size = 1 * 1024 * 1024;
+
 #ifdef POSIX
     opts.clock = CLK_REALTIME;
 #else
     opts.clock = CLK_CLOCK;
 #endif
-    opts.method = METHOD_MEMCPY;
-    opts.fill_random = 0;
-    opts.cache_size = 1 * 1024 * 1024;
 }
 
-/*
- -------------------------------------------------------------------------------
+
+/* ==========================================================================
     returns argument from 'argv'. If passed 'argv' doesn't hold valid argument
     -1 will be returned.
- -------------------------------------------------------------------------------
- */
+   ========================================================================== */
 
-static char opts_get(
-    char*   argv)   /* pointer to option */
+
+static char opts_get
+(
+    char*  argv  /* pointer to option */
+)
 {
     if (argv == NULL || argv[0] != '-' || islower(argv[1]) == 0)
     {
@@ -82,16 +81,17 @@ static char opts_get(
     return argv[1];
 }
 
-/*
- -------------------------------------------------------------------------------
+
+/* ==========================================================================
     Prints help message. Who would suspect?
- -------------------------------------------------------------------------------
- */
+
+    Function uses more than one print, as ANSI C only requires compilers to
+    support at least 509 long string literal
+   ========================================================================== */
+
 
 static void opts_print_help(void)
 {
-/*$off*/
-
     printf(
 "usage: memperf [-h | -v | options]\n"
 "\n"
@@ -122,49 +122,50 @@ static void opts_print_help(void)
 #endif
 "\tclock        clock_t is used\n"
 );
-
-/*$on*/
 }
 
-/*$2- Public Functions =======================================================*/
+/* ==== Public functions ==================================================== */
 
 
-/*
- -------------------------------------------------------------------------------
+/* ==========================================================================
     parses input options. if help (-h) or version (-v) option is found, program
     prints apropriate message and function returns with return code 0. If error
     occurs while parsing (syntax error), function exits with return code -1. -2
     is returned when ivalid option was passed or options has invalid arguments.
     options are stored in global variable 'opts'. Function first sets 'opts'
     with default values which are overwritten by user defined ones.
- -------------------------------------------------------------------------------
- */
+   ========================================================================== */
 
-int opts_parse(
-    int     argc,   /* number of arguments */
-    char*   argv[]) /* array of arguments */
+
+int opts_parse
+(
+    int    argc,   /* number of arguments */
+    char  *argv[]  /* array of arguments */
+)
 {
-    /*~~~~~~~~~~*/
-    float   tmp;            /* temp variable for parsing */
-    long    mul;            /* multiplication for <mbytes> arguments */
-    char*   ep;             /* error pointer of strtol function */
-    /*~~~~~~~~~~*/
+    float  tmp;    /* temp variable for parsing */
+    long   mul;    /* multiplication for <mbytes> arguments */
+    char  *ep;     /* error pointer of strtol function */
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    /* first set program options to default */
+    /*
+     * first set program options to default
+     */
 
     opts_reset();
 
-    /* skip program name */
+    /*
+     * skip program name
+     */
 
     argc--;
     argv++;
 
     while (argc--)
     {
-        /*~~~~~~~~~~~~~~~*/
-        signed char opt;    /* current option */
-        char*       optarg; /* current option argument */
-        /*~~~~~~~~~~~~~~~*/
+        signed char  opt;     /* current option */
+        char        *optarg;  /* current option argument */
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
         optarg = (*argv) + 2;
 

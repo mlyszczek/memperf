@@ -1,36 +1,31 @@
-/*$2
- ===============================================================================
-    Licensed under BSD 2-clause license. See LICENSE file for more information.
+/* ==========================================================================
+    Licensed under BSD 2clause license. See LICENSE file for more information
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
- ===============================================================================
- */
+   ========================================================================== */
 
 
-/*$2- Included Files =========================================================*/
+/* ==== Include files ======================================================= */
 
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "opts.h"
 #include "bench.h"
+#include "opts.h"
 
 
-/*
- -------------------------------------------------------------------------------
- -------------------------------------------------------------------------------
- */
-int main(
-    int     argc,   /* */
-    char*   argv[]) /* */
+int main
+(
+    int    argc,   /* number of program options */
+    char  *argv[]  /* list of program options */
+)
 {
-    /*~~~~~~~~~~*/
-    void*   dst;    /* destination address for benchmarking */
-    void*   src;    /* source address for benchmarking */
-    void*   f1;     /* first pointer used to flush cpu cache */
-    void*   f2;     /* second pointer used to flush cpu cache */
-    int     rc;     /* return code */
-    /*~~~~~~~~~~*/
+    void  *dst;    /* destination address for benchmarking */
+    void  *src;    /* source address for benchmarking */
+    void  *f1;     /* first pointer used to flush cpu cache */
+    void  *f2;     /* second pointer used to flush cpu cache */
+    int    rc;     /* return code */
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     if ((rc = opts_parse(argc, argv)) != 0)
     {
@@ -46,15 +41,12 @@ int main(
     if (dst == NULL || src == NULL || f1 == NULL || f2 == NULL)
     {
         fprintf(stderr, "Couldn't allocate requested memory block\n");
-        free(dst);
-        free(src);
-        free(f1);
-        free(f2);
-        exit(3);
+        goto error;
     }
 
     bench(dst, src, f1, f2);
 
+error:
     free(dst);
     free(src);
     free(f1);

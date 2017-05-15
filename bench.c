@@ -1,12 +1,10 @@
-/*$2
- ===============================================================================
-    Licensed under BSD 2-clause license. See LICENSE file for more information.
+/* ==========================================================================
+    Licensed under BSD 2clause license. See LICENSE file for more information
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
- ===============================================================================
- */
+   ========================================================================== */
 
 
-/*$2- Include files ==========================================================*/
+/* ==== Include files ======================================================= */
 
 
 #include "bench.h"
@@ -21,7 +19,7 @@
 #include "utils.h"
 
 
-/*$2- Private Macros =========================================================*/
+/* ==== Private macros   ==================================================== */
 
 
 #define BENCH_START()                                \
@@ -32,12 +30,12 @@
             bench_fill_random(dst, opts.block_size); \
             bench_fill_random(src, opts.block_size); \
         }                                            \
-                                              \
+                                                     \
         /*
          * this tries to flush cpu cache - provided that user set
          * opts.cache_size big enough
          */                                          \
-                                              \
+                                                     \
         memcpy(f1, f2, opts.cache_size);             \
         ts(start)
 
@@ -46,25 +44,25 @@
     ts_add_diff(taken, start, finish); \
 }
 
-/*$2- Private Functions ======================================================*/
+/* ==== Private functions =================================================== */
 
 
-/*
- -------------------------------------------------------------------------------
+/* ==========================================================================
     prints benchmark report to standard output
- -------------------------------------------------------------------------------
- */
+   ========================================================================== */
 
-static void bench_report(
-    void*   taken,  /* time taken on data copying */
-    float   copied) /* number of bytes copied */
+
+static void bench_report
+(
+    void*          taken,      /* time taken on data copying */
+    float          copied      /* number of bytes copied */
+)
 {
-    /*~~~~~~~~~~~~~~~~~~~~~~~~*/
-    struct jedec    jd_bps;     /* bytes per second in jedec format */
-    struct jedec    jd_copied;  /* number of bytes copied in jedec format */
-    unsigned long   ns;         /* time taken copying data in nanoseconds */
-    float           bps;        /* bytes per second rate */
-    /*~~~~~~~~~~~~~~~~~~~~~~~~*/
+    struct jedec   jd_bps;     /* bytes per second in jedec format */
+    struct jedec   jd_copied;  /* number of bytes copied in jedec format */
+    unsigned long  ns;         /* time taken copying data in nanoseconds */
+    float          bps;        /* bytes per second rate */
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     if ((ns = ts2ns(taken)) == 0)
     {
@@ -85,54 +83,54 @@ static void bench_report(
            jd_bps.pre);
 }
 
-/*
- -------------------------------------------------------------------------------
+
+/* ==========================================================================
     stores 'c' random bytes into 'p'
- -------------------------------------------------------------------------------
- */
+   ========================================================================== */
 
-static void bench_fill_random(
-    void*   p,  /* location where random bytes will be stored */
-    size_t  c)  /* number of bytes to store in 'p' */
+
+static void bench_fill_random
+(
+    void   *p,  /* location where random bytes will be stored */
+    size_t  c   /* number of bytes to store in 'p' */
+)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    unsigned char*  m = p;
-    /*~~~~~~~~~~~~~~~~~~*/
-
     while (c--)
     {
-        *m++ = rand() % 256;
+        *(unsigned char *)p = rand() % 256;
+        p = (unsigned char *)p + 1;
     }
 }
 
-/*$2- Public Functions =======================================================*/
+
+/* ==== Public functions ==================================================== */
 
 
-/*
- -------------------------------------------------------------------------------
+/* ==========================================================================
     performs benchmark on pointers dst and src. dst and src can be heap or
     stack allocated.
- -------------------------------------------------------------------------------
- */
+   ========================================================================== */
 
-int bench(
-    void*   dst,    /* destination pointer */
-    void*   src,    /* source pointer */
-    void*   f1,     /* first pointer used to flush cpu cache */
-    void*   f2)     /* second pointer used to flush cpu cache */
+
+int bench
+(
+    void         *dst,              /* destination pointer */
+    void         *src,              /* source pointer */
+    void         *f1,               /* first pointer used to flush cpu cache */
+    void         *f2                /* second pointer used to flush cpu cache */
+)
 {
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-    struct jedec    jd_block_size;      /* block size in jedec format */
-    struct jedec    jd_report_intvl;    /* report interval value in jedec format */
-    void*           start;              /* timer indicating benchmark start */
-    void*           finish;             /* timer indicating benchmark finish */
-    void*           taken;              /* timer for time taken on benchmark */
-    float           bytes_copied;       /* bytes copied in * iteration */
-    size_t          loops;              /* loops needed to copy requested bytes */
-    size_t          i;                  /* iterator for loop */
-    size_t          j;                  /* iterator for loop */
-    size_t          k;                  /* iterator for loop */
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    void         *start;            /* timer indicating benchmark start */
+    void         *finish;           /* timer indicating benchmark finish */
+    void         *taken;            /* timer for time taken on benchmark */
+    float         bytes_copied;     /* bytes copied in * iteration */
+    size_t        loops;            /* loops needed to copy requested bytes */
+    size_t        i;                /* iterator for loop */
+    size_t        j;                /* iterator for loop */
+    size_t        k;                /* iterator for loop */
+    struct jedec  jd_block_size;    /* block size in jedec format */
+    struct jedec  jd_report_intvl;  /* report interval value in jedec format */
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     start = ts_new();
     finish = ts_new();
@@ -178,15 +176,14 @@ int bench(
 
             for (k = 0; k != opts.block_size; ++k)
             {
-                /*~~~~~~~~~~~~~~~*/
-                unsigned char*  s1;
-                unsigned char*  s2;
-                /*~~~~~~~~~~~~~~~*/
+                unsigned char  *d;  /* source pointer */
+                unsigned char  *s;  /* destination pointer */
+                /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-                s1 = dst;
-                s2 = src;
+                d = dst;
+                s = src;
 
-                s1[k] = s2[k];
+                d[k] = s[k];
             }
 
             BENCH_END();

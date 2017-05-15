@@ -12,7 +12,9 @@
 
 enum clock
 {
+#ifdef POSIX
     CLK_REALTIME,
+#endif
     CLK_CLOCK
 };
 

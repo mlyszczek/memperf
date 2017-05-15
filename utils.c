@@ -32,6 +32,7 @@
 
 void ts(void* tm)   /* pointer to time where to store current timestamp */
 {
+#ifdef POSIX
     if (opts.clock == CLK_REALTIME)
     {
         /*
@@ -42,18 +43,21 @@ void ts(void* tm)   /* pointer to time where to store current timestamp */
 
         clock_gettime(CLOCK_REALTIME, tm);
     }
-    else if (opts.clock == CLK_CLOCK)
-    {
-        /*~~~~~~~~~~~~~~~*/
-        clock_t*    t = tm;
-        /*~~~~~~~~~~~~~~~*/
-
-        *t = clock();
-    }
     else
-    {
-        assert(0 && "clock not supported, should not get here");
-    }
+#endif
+
+        if (opts.clock == CLK_CLOCK)
+        {
+            /*~~~~~~~~~~~~~~~*/
+            clock_t*    t = tm;
+            /*~~~~~~~~~~~~~~~*/
+
+            *t = clock();
+        }
+        else
+        {
+            assert(0 && "clock not supported, should not get here");
+        }
 }
 
 /*
@@ -65,18 +69,22 @@ void ts(void* tm)   /* pointer to time where to store current timestamp */
 
 void* ts_new(void)
 {
+#ifdef POSIX
     if (opts.clock == CLK_REALTIME)
     {
         return malloc(sizeof(struct timespec));
     }
-    else if (opts.clock == CLK_CLOCK)
-    {
-        return malloc(sizeof(clock_t));
-    }
     else
-    {
-        assert(0 && "clock not suppoert, should not get here");
-    }
+#endif
+
+        if (opts.clock == CLK_CLOCK)
+        {
+            return malloc(sizeof(clock_t));
+        }
+        else
+        {
+            assert(0 && "clock not suppoert, should not get here");
+        }
 }
 
 /*
@@ -88,18 +96,22 @@ void* ts_new(void)
 
 void ts_reset(void* tm) /* time object to zero */
 {
+#ifdef POSIX
     if (opts.clock == CLK_REALTIME)
     {
         memset(tm, 0, sizeof(struct timespec));
     }
-    else if (opts.clock == CLK_CLOCK)
-    {
-        memset(tm, 0, sizeof(clock_t));
-    }
     else
-    {
-        assert(0 && "clock not supported, should not get here");
-    }
+#endif
+
+        if (opts.clock == CLK_CLOCK)
+        {
+            memset(tm, 0, sizeof(clock_t));
+        }
+        else
+        {
+            assert(0 && "clock not supported, should not get here");
+        }
 }
 
 /*
@@ -115,6 +127,7 @@ void ts_add_diff(
     void*   start,  /* first point in time to differate */
     void*   finish) /* second point in time to differate */
 {
+#ifdef POSIX
     if (opts.clock == CLK_REALTIME)
     {
         /*~~~~~~~~~~~~~~~~~~~~*/
@@ -148,24 +161,26 @@ void ts_add_diff(
             t->tv_nsec -= 1000000000;
         }
     }
-    else if (opts.clock == CLK_CLOCK)
-    {
-        /*~~~~~~~~~~~~*/
-        clock_t*    t;          /* tm pointer */
-        clock_t*    s;          /* start pointer */
-        clock_t*    f;          /* finish pointer */
-        /*~~~~~~~~~~~~*/
-
-        t = tm;
-        s = start;
-        f = finish;
-
-        *t += *f -*s;
-    }
     else
-    {
-        assert(0 && "clock not supported, should not get here");
-    }
+#endif
+        if (opts.clock == CLK_CLOCK)
+        {
+            /*~~~~~~~~~~~~*/
+            clock_t*    t;      /* tm pointer */
+            clock_t*    s;      /* start pointer */
+            clock_t*    f;      /* finish pointer */
+            /*~~~~~~~~~~~~*/
+
+            t = tm;
+            s = start;
+            f = finish;
+
+            *t += *f -*s;
+        }
+        else
+        {
+            assert(0 && "clock not supported, should not get here");
+        }
 }
 
 /*
@@ -177,6 +192,7 @@ void ts_add_diff(
 
 unsigned long ts2ns(void* tm)   /* time to convert to nanoseconds */
 {
+#ifdef POSIX
     if (opts.clock == CLK_REALTIME)
     {
         /*~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -185,18 +201,20 @@ unsigned long ts2ns(void* tm)   /* time to convert to nanoseconds */
 
         return t->tv_sec * 1000000l + t->tv_nsec / 1000;
     }
-    else if (opts.clock == CLK_CLOCK)
-    {
-        /*~~~~~~~~~~~~~~~*/
-        clock_t*    t = tm;
-        /*~~~~~~~~~~~~~~~*/
-
-        return *t / (CLOCKS_PER_SEC / 1000000);
-    }
     else
-    {
-        assert(0 && "clock not supported, should not get here");
-    }
+#endif
+        if (opts.clock == CLK_CLOCK)
+        {
+            /*~~~~~~~~~~~~~~~*/
+            clock_t*    t = tm;
+            /*~~~~~~~~~~~~~~~*/
+
+            return *t / (CLOCKS_PER_SEC / 1000000);
+        }
+        else
+        {
+            assert(0 && "clock not supported, should not get here");
+        }
 }
 
 /*

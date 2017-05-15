@@ -54,7 +54,11 @@ static void opts_reset(void)
     opts.block_size = 16 * 1024;
     opts.report_intvl = 100 * 1024 * 1024;
     opts.num_intvl = 10;
+#ifdef POSIX
     opts.clock = CLK_REALTIME;
+#else
+    opts.clock = CLK_CLOCK;
+#endif
     opts.method = METHOD_MEMCPY;
     opts.fill_random = 0;
     opts.cache_size = 1 * 1024 * 1024;
@@ -113,7 +117,9 @@ static void opts_print_help(void)
 "\tbbb          byte by byte copy, simple for loop\n"
 "\n"
 "clocks:\n"
+#ifdef POSIX
 "\trealtime     posix CLOCK_REALTIME clock is used\n"
+#endif
 "\tclock        clock_t is used\n"
 );
 
@@ -253,21 +259,25 @@ int opts_parse(
         case 'c':
             HAS_OPTARG();
 
+#ifdef POSIX
             if (strcmp(optarg, "realtime") == 0)
             {
                 opts.clock = CLK_REALTIME;
             }
-            else if (strcmp(optarg, "clock") == 0)
-            {
-                opts.clock = CLK_CLOCK;
-            }
             else
-            {
-                fprintf(stderr,
-                        "parameter %s for optargument 'c' is invalid\n",
-                        optarg);
-                exit(2);
-            }
+#endif
+
+                if (strcmp(optarg, "clock") == 0)
+                {
+                    opts.clock = CLK_CLOCK;
+                }
+                else
+                {
+                    fprintf(stderr,
+                            "parameter %s for optargument 'c' is invalid\n",
+                            optarg);
+                    exit(2);
+                }
 
             break;
 

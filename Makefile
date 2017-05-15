@@ -2,7 +2,7 @@ LIBS =
 SRCS = bench.c opts.c utils.c main.c
 MAIN = memperf
 
-STD = -std=c89 -D_POSIX_C_SOURCE=199309L
+STD = -std=c89
 WARN = -Wall -Wextra -pedantic
 CFLAGS = $(STD) $(WARN)
 
@@ -12,8 +12,11 @@ DESTDIR ?= `cat .destdir`
 CC ?=
 INC ?=
 LINC ?=
-THREADS ?=
+POSIX ?=
 
+ifdef POSIX
+	STD += -D_POSIX_C_SOURCE=199309L
+endif
 
 OBJS = $(SRCS:.c=.o)
 

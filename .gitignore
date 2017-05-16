@@ -1,3 +1,4 @@
 .*
 memperf
+memperf-tests
 *.o

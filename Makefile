@@ -1,5 +1,5 @@
 LIBS =
-SRCS = bench.c opts.c utils.c main.c
+SRCS = bench.c opts.c utils.c
 MAIN = memperf
 
 STD = -std=c89
@@ -16,6 +16,7 @@ POSIX ?=
 
 ifdef POSIX
 	STD += -D_POSIX_C_SOURCE=199309L
+	CFLAGS += -DPOSIX
 endif
 
 OBJS = $(SRCS:.c=.o)
@@ -30,6 +31,13 @@ release: $(MAIN)
 debug: CFLAGS += -O0 -ggdb -g3
 debug: $(MAIN)
 
+test_debug: CFLAGS += -O0 -ggdb -g3
+test_debug: test
+
+test: $(OBJS)
+	$(CC) $(CFLAGS) $(LIBS) $(LINC) $(LDFLAGS) -o $(MAIN)-tests $(OBJS) tests.c
+	@./memperf-tests
+
 install:
 	install -m 0755 -D -t $(DESTDIR)/bin memperf
 	echo $(DESTDIR) > .destdir
@@ -38,10 +46,10 @@ uninstall:
 	$(RM) $(DESTDIR)/bin/memperf
 
 clean:
-	$(RM) *.o *~ $(MAIN)
+	$(RM) *.o *~ $(MAIN) $(MAIN)-tests
 
 $(MAIN): $(OBJS)
-	$(CC) $(CFLAGS) $(LIBS) $(LINC) $(LDFLAGS) -o $(MAIN) $(OBJS)
+	$(CC) $(CFLAGS) $(LIBS) $(LINC) $(LDFLAGS) -o $(MAIN) $(OBJS) main.c
 
 .c.o:
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@

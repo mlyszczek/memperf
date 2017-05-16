@@ -25,7 +25,7 @@
         if (*optarg == '\0')                                            \
         {                                                               \
             fprintf(stderr, "missing argument for option '%c'\n", opt); \
-            exit(2);                                                    \
+            return -2;                                                  \
         }                                                               \
     }                                                                   \
     while (0);
@@ -128,12 +128,15 @@ static void opts_print_help(void)
 
 
 /* ==========================================================================
-    parses input options. if help (-h) or version (-v) option is found, program
-    prints apropriate message and function returns with return code 0. If error
-    occurs while parsing (syntax error), function exits with return code -1. -2
-    is returned when ivalid option was passed or options has invalid arguments.
-    options are stored in global variable 'opts'. Function first sets 'opts'
-    with default values which are overwritten by user defined ones.
+    resets global 'opts' object with default values, and parses input options
+    overwritting default settings. If help (-h) or version (-v) option is found
+    anywhere in the argv, program prints what first was found and exits program
+    with code 0.
+
+    returns:
+            -1      syntax error (ie not started with '-')
+            -2      invalid argument for the option
+            -3      given option is not recognized (not available)
    ========================================================================== */
 
 
@@ -178,7 +181,7 @@ int opts_parse
         {
             fprintf(stderr, "Syntax error in arguments\n");
             opts_print_help();
-            exit(1);
+            return -1;
         }
 
         switch (opt)
@@ -222,7 +225,7 @@ int opts_parse
                             "parameter %s for argument '%c' is invalid\n",
                             optarg,
                             opt);
-                    exit(2);
+                    return -2;
                 }
             }
 
@@ -251,7 +254,7 @@ int opts_parse
                 fprintf(stderr,
                         "parameter %s for argument 'i' is invalid\n",
                         optarg);
-                exit(2);
+                return -2;
             }
 
             opts.num_intvl = tmp;
@@ -268,17 +271,17 @@ int opts_parse
             else
 #endif
 
-                if (strcmp(optarg, "clock") == 0)
-                {
-                    opts.clock = CLK_CLOCK;
-                }
-                else
-                {
-                    fprintf(stderr,
-                            "parameter %s for optargument 'c' is invalid\n",
-                            optarg);
-                    exit(2);
-                }
+            if (strcmp(optarg, "clock") == 0)
+            {
+                opts.clock = CLK_CLOCK;
+            }
+            else
+            {
+                fprintf(stderr,
+                        "parameter %s for optargument 'c' is invalid\n",
+                        optarg);
+                return -2;
+            }
 
             break;
 
@@ -287,18 +290,18 @@ int opts_parse
 
             if (strcmp(optarg, "memcpy") == 0)
             {
-                opts.clock = METHOD_MEMCPY;
+                opts.method = METHOD_MEMCPY;
             }
             else if (strcmp(optarg, "bbb") == 0)
             {
-                opts.clock = METHOD_BBB;
+                opts.method = METHOD_BBB;
             }
             else
             {
                 fprintf(stderr,
                         "parameter %s for optargument 'm' is invalid\n",
                         optarg);
-                exit(2);
+                return -2;
             }
 
             break;
@@ -309,7 +312,7 @@ int opts_parse
                     *optarg,
                     (unsigned char) *optarg);
             opts_print_help();
-            exit(2);
+            return -3;
         }
     }
 

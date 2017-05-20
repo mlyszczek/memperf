@@ -29,6 +29,16 @@ int main
 
     if ((rc = opts_parse(argc, argv)) != 0)
     {
+        if (rc == 1)
+        {
+            /*
+             * help or version was passed, return with code 0, as this is not an
+             * error case
+             */
+
+            return 0;
+        }
+
         return -rc;
     }
 

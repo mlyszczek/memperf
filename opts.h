@@ -32,7 +32,6 @@ struct opts
     float report_intvl;
     enum clock clock;
     enum method method;
-    int fill_random;
 };
 
 extern struct opts opts;

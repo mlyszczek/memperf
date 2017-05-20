@@ -22,26 +22,23 @@
 /* ==== Private macros   ==================================================== */
 
 
-#define BENCH_START()                                \
-    for (j = 0; j <= loops; ++j)                     \
-    {                                                \
-        if (opts.fill_random)                        \
-        {                                            \
-            bench_fill_random(dst, opts.block_size); \
-            bench_fill_random(src, opts.block_size); \
-        }                                            \
-                                                     \
+#define BENCH_START()                           \
+    for (j = 0; j <= loops; ++j)                \
+    {                                           \
         /*
          * this tries to flush cpu cache - provided that user set
          * opts.cache_size big enough
-         */                                          \
-                                                     \
-        memcpy(f1, f2, opts.cache_size);             \
+         */                                     \
+                                                \
+        if (opts.cache_size)                    \
+        {                                       \
+            memcpy(f1, f2, opts.cache_size);    \
+        }                                       \
         ts(start)
 
-#define BENCH_END()                    \
-    ts(finish);                        \
-    ts_add_diff(taken, start, finish); \
+#define BENCH_END()                             \
+    ts(finish);                                 \
+    ts_add_diff(taken, start, finish);          \
 }
 
 /* ==== Private functions =================================================== */
@@ -81,25 +78,6 @@ static void bench_report
            ns,
            jd_bps.val,
            jd_bps.pre);
-}
-
-
-/* ==========================================================================
-    stores 'c' random bytes into 'p'
-   ========================================================================== */
-
-
-static void bench_fill_random
-(
-    void   *p,  /* location where random bytes will be stored */
-    size_t  c   /* number of bytes to store in 'p' */
-)
-{
-    while (c--)
-    {
-        *(unsigned char *)p = rand() % 256;
-        p = (unsigned char *)p + 1;
-    }
 }
 
 

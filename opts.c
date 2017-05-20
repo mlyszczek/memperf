@@ -51,7 +51,6 @@ static void opts_reset(void)
     opts.report_intvl = 100 * 1024 * 1024;
     opts.num_intvl = 10;
     opts.method = METHOD_MEMCPY;
-    opts.fill_random = 0;
     opts.cache_size = 1 * 1024 * 1024;
 
 #ifdef POSIX
@@ -101,7 +100,6 @@ static void opts_print_help(void)
 "options:\n"
 "\t-h           this help message\n"
 "\t-v           prints version and exists\n"
-"\t-f           fill memory block with random data before copy\n"
 "\t-b<mbytes>   size of a single memory block\n"
 "\t-r<mbytes>   print report every 'mbytes' copied\n"
 "\t-l<mbytes>   size of the cpu cache, if 0 cache flush is disabled\n"
@@ -130,10 +128,12 @@ static void opts_print_help(void)
 /* ==========================================================================
     resets global 'opts' object with default values, and parses input options
     overwritting default settings. If help (-h) or version (-v) option is found
-    anywhere in the argv, program prints what first was found and exits program
-    with code 0.
+    anywhere in the argv, program prints what first was found and returns with
+    code 1.
 
     returns:
+             1      -h or -v was passed
+             0      all options parsed, program can continue
             -1      syntax error (ie not started with '-')
             -2      invalid argument for the option
             -3      given option is not recognized (not available)
@@ -188,15 +188,11 @@ int opts_parse
         {
         case 'v':
             printf(APP_VERSION "\n");
-            exit(0);
+            return 1;
 
         case 'h':
             opts_print_help();
-            exit(0);
-
-        case 'f':
-            opts.fill_random = 1;
-            break;
+            return 1;
 
         case 'b':
         case 'r':

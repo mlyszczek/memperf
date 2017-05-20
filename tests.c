@@ -21,6 +21,7 @@
 
 mt_defs();
 
+
 /* ==== Private functions =================================================== */
 
 
@@ -232,6 +233,10 @@ void ts_new_clock(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void ts_clock(void)
 {
     clock_t *tm;
@@ -249,6 +254,10 @@ void ts_clock(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void ts_reset_clock(void)
 {
     clock_t *tm;
@@ -262,6 +271,11 @@ void ts_reset_clock(void)
 
     free(tm);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
+
 
 void ts_add_diff_clock_single(void)
 {
@@ -293,6 +307,10 @@ void ts_add_diff_clock_single(void)
     free(start);
     free(finish);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void ts_add_diff_clock_multi(void)
@@ -333,6 +351,10 @@ void ts_add_diff_clock_multi(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 #ifdef POSIX
 void ts_new_realtime(void)
 {
@@ -345,6 +367,11 @@ void ts_new_realtime(void)
 
     free(tm);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
+
 
 void ts_realtime(void)
 {
@@ -363,6 +390,11 @@ void ts_realtime(void)
     free(tm);
 }
 
+
+/* ==========================================================================
+   ========================================================================== */
+
+
 void ts_reset_realtime(void)
 {
     struct timespec *tm;
@@ -377,6 +409,11 @@ void ts_reset_realtime(void)
 
     free(tm);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
+
 
 void ts_add_diff_realtime_single_simple(void)
 {
@@ -413,6 +450,10 @@ void ts_add_diff_realtime_single_simple(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void ts_add_diff_realtime_single_with_nsec_no_overflow(void)
 {
     struct timespec *tm;
@@ -447,6 +488,11 @@ void ts_add_diff_realtime_single_with_nsec_no_overflow(void)
     free(finish);
 }
 
+
+/* ==========================================================================
+   ========================================================================== */
+
+
 void ts_add_diff_realtime_single_with_nsec_overflow_down(void)
 {
     struct timespec *tm;
@@ -480,6 +526,11 @@ void ts_add_diff_realtime_single_with_nsec_overflow_down(void)
     free(start);
     free(finish);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
+
 
 void ts_add_diff_realtime_single_with_nsec_overflow_up(void)
 {
@@ -523,6 +574,11 @@ void ts_add_diff_realtime_single_with_nsec_overflow_up(void)
     free(start);
     free(finish);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
+
 
 void ts_add_diff_realtime_multi_combined(void)
 {
@@ -598,6 +654,10 @@ void ts_add_diff_realtime_multi_combined(void)
 #endif
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void bytes2jedec_test(void)
 {
     static const int    KB = 1024;
@@ -657,7 +717,6 @@ void opts_parse_default_all(void)
     mt_fail(opts.report_intvl == 100 * 1024 * 1024);
     mt_fail(opts.num_intvl == 10);
     mt_fail(opts.method == METHOD_MEMCPY);
-    mt_fail(opts.fill_random == 0);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
 #ifdef POSIX
@@ -670,30 +729,8 @@ void opts_parse_default_all(void)
 }
 
 
-void opts_parse_opt_f(void)
-{
-    char **argv;
-    int    argc;
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-    argv = str2opts("-f", &argc);
-    opts_parse(argc, argv);
-
-    mt_fail(opts.block_size == 16 * 1024);
-    mt_fail(opts.report_intvl == 100 * 1024 * 1024);
-    mt_fail(opts.num_intvl == 10);
-    mt_fail(opts.method == METHOD_MEMCPY);
-    mt_fail(opts.fill_random == 1);
-    mt_fail(opts.cache_size == 1 * 1024 * 1024);
-
-#ifdef POSIX
-    mt_fail(opts.clock == CLK_REALTIME);
-#else
-    mt_fail(opts.clock == CLK_CLOCK);
-#endif
-
-    opts_free(argc, argv);
-}
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_b_invalid_prefixes(void)
@@ -723,6 +760,10 @@ void opts_parse_opt_b_invalid_prefixes(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_b_invalid_param(void)
 {
     char  **argv;
@@ -744,6 +785,10 @@ void opts_parse_opt_b_invalid_param(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_b_bytes(void)
 {
     char         **argv;
@@ -762,7 +807,6 @@ void opts_parse_opt_b_bytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -774,6 +818,10 @@ void opts_parse_opt_b_bytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_b_kbytes(void)
@@ -794,7 +842,6 @@ void opts_parse_opt_b_kbytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -806,6 +853,10 @@ void opts_parse_opt_b_kbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_b_mbytes(void)
@@ -826,7 +877,6 @@ void opts_parse_opt_b_mbytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -838,6 +888,10 @@ void opts_parse_opt_b_mbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_b_gbytes(void)
@@ -858,7 +912,6 @@ void opts_parse_opt_b_gbytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -870,6 +923,10 @@ void opts_parse_opt_b_gbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_r_invalid_prefixes(void)
@@ -899,6 +956,10 @@ void opts_parse_opt_r_invalid_prefixes(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_r_invalid_param(void)
 {
     char  **argv;
@@ -920,6 +981,10 @@ void opts_parse_opt_r_invalid_param(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_r_bytes(void)
 {
     char         **argv;
@@ -938,7 +1003,6 @@ void opts_parse_opt_r_bytes(void)
         mt_fail(opts.report_intvl == i);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -950,6 +1014,10 @@ void opts_parse_opt_r_bytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_r_kbytes(void)
@@ -970,7 +1038,6 @@ void opts_parse_opt_r_kbytes(void)
         mt_fail(opts.report_intvl == i * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -982,6 +1049,10 @@ void opts_parse_opt_r_kbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_r_mbytes(void)
@@ -1002,7 +1073,6 @@ void opts_parse_opt_r_mbytes(void)
         mt_fail(opts.report_intvl == i * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -1014,6 +1084,10 @@ void opts_parse_opt_r_mbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_r_gbytes(void)
@@ -1034,7 +1108,6 @@ void opts_parse_opt_r_gbytes(void)
         mt_fail(opts.report_intvl == i * 1024 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -1046,6 +1119,10 @@ void opts_parse_opt_r_gbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_l_invalid_prefixes(void)
@@ -1075,6 +1152,10 @@ void opts_parse_opt_l_invalid_prefixes(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_l_invalid_param(void)
 {
     char  **argv;
@@ -1095,6 +1176,10 @@ void opts_parse_opt_l_invalid_param(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_l_bytes(void)
 {
     char         **argv;
@@ -1113,7 +1198,6 @@ void opts_parse_opt_l_bytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == i);
 
     #ifdef POSIX
@@ -1125,6 +1209,10 @@ void opts_parse_opt_l_bytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_l_kbytes(void)
@@ -1145,7 +1233,6 @@ void opts_parse_opt_l_kbytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == i * 1024);
 
     #ifdef POSIX
@@ -1157,6 +1244,10 @@ void opts_parse_opt_l_kbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_l_mbytes(void)
@@ -1177,7 +1268,6 @@ void opts_parse_opt_l_mbytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == i * 1024 * 1024);
 
     #ifdef POSIX
@@ -1189,6 +1279,10 @@ void opts_parse_opt_l_mbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_l_gbytes(void)
@@ -1209,7 +1303,6 @@ void opts_parse_opt_l_gbytes(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == 10);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == i * 1024 * 1024 * 1024);
 
     #ifdef POSIX
@@ -1221,6 +1314,10 @@ void opts_parse_opt_l_gbytes(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_i(void)
@@ -1241,7 +1338,6 @@ void opts_parse_opt_i(void)
         mt_fail(opts.report_intvl == 100 * 1024 * 1024);
         mt_fail(opts.num_intvl == i);
         mt_fail(opts.method == METHOD_MEMCPY);
-        mt_fail(opts.fill_random == 0);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
     #ifdef POSIX
@@ -1253,6 +1349,10 @@ void opts_parse_opt_i(void)
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_i_invalid_param(void)
@@ -1283,6 +1383,10 @@ void opts_parse_opt_i_invalid_param(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_m(void)
 {
     char **argv;
@@ -1296,7 +1400,6 @@ void opts_parse_opt_m(void)
     mt_fail(opts.report_intvl == 100 * 1024 * 1024);
     mt_fail(opts.num_intvl == 10);
     mt_fail(opts.method == METHOD_MEMCPY);
-    mt_fail(opts.fill_random == 0);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
 #ifdef POSIX
@@ -1315,7 +1418,6 @@ void opts_parse_opt_m(void)
     mt_fail(opts.report_intvl == 100 * 1024 * 1024);
     mt_fail(opts.num_intvl == 10);
     mt_fail(opts.method == METHOD_BBB);
-    mt_fail(opts.fill_random == 0);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
 #ifdef POSIX
@@ -1325,6 +1427,10 @@ void opts_parse_opt_m(void)
 #endif
     opts_free(argc, argv);
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_m_invalid_param(void)
@@ -1348,6 +1454,10 @@ void opts_parse_opt_m_invalid_param(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_opt_c(void)
 {
     char **argv;
@@ -1361,7 +1471,6 @@ void opts_parse_opt_c(void)
     mt_fail(opts.report_intvl == 100 * 1024 * 1024);
     mt_fail(opts.num_intvl == 10);
     mt_fail(opts.method == METHOD_MEMCPY);
-    mt_fail(opts.fill_random == 0);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
     mt_fail(opts.clock == CLK_CLOCK);
 
@@ -1375,13 +1484,16 @@ void opts_parse_opt_c(void)
     mt_fail(opts.report_intvl == 100 * 1024 * 1024);
     mt_fail(opts.num_intvl == 10);
     mt_fail(opts.method == METHOD_MEMCPY);
-    mt_fail(opts.fill_random == 0);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
     mt_fail(opts.clock == CLK_REALTIME);
 
     opts_free(argc, argv);
 #endif
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_opt_c_invalid_param(void)
@@ -1405,9 +1517,13 @@ void opts_parse_opt_c_invalid_param(void)
 }
 
 
+/* ==========================================================================
+   ========================================================================== */
+
+
 void opts_parse_unknown_opts(void)
 {
-    static const char *allowed_opts = "hvfbrlimc";
+    static const char *allowed_opts = "hvbrlimc";
 
     char  **argv;
     int     argc;
@@ -1417,19 +1533,25 @@ void opts_parse_unknown_opts(void)
 
     for (c = 'a'; c != 'z' + 1; ++c)
     {
-        if (is_in_array(c, allowed_opts))
-        {
-            continue;
-        }
-
         sprintf(param, "-%c", c);
         argv = str2opts(param, &argc);
 
-        mt_fail(opts_parse(argc, argv) == -3);
+        if (is_in_array(c, allowed_opts))
+        {
+            mt_fail(opts_parse(argc, argv) != -3);
+        }
+        else
+        {
+            mt_fail(opts_parse(argc, argv) == -3);
+        }
 
         opts_free(argc, argv);
     }
 }
+
+
+/* ==========================================================================
+   ========================================================================== */
 
 
 void opts_parse_syntax_error(void)

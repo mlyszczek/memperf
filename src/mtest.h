@@ -11,29 +11,6 @@
 
 #include <stdio.h>
 
-/* ==== private macros ====================================================== */
-
-
-/* ==========================================================================
-    all printf will be able to print back to stderr and stdout
-   ========================================================================== */
-
-
-#define mt_allow_print()                                                       \
-    freopen("/dev/tty", "w", stderr);                                          \
-    freopen("/dev/tty", "w", stdout)
-
-
-/* ==========================================================================
-    when this macro is called, all printing to stderr and stdout will have no
-    effect. To reenable printing, call mt_allow_print
-   ========================================================================== */
-
-
-#define mt_disable_print()                                                     \
-    fclose(stderr);                                                            \
-    fclose(stdout)
-
 
 /* ==== public macros ======================================================= */
 
@@ -64,9 +41,7 @@
     mt_test_status = 0;                                                        \
     ++mt_total_tests;                                                          \
     fprintf(stdout, "test %-71s", curr_test);                                  \
-    mt_disable_print();                                                        \
     f();                                                                       \
-    mt_allow_print();                                                          \
     if (mt_test_status != 0)                                                   \
         fprintf(stdout, "[NK]\n");                                             \
     else                                                                       \
@@ -86,9 +61,7 @@
     ++mt_total_asserts;                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        mt_allow_print();                                                      \
         fprintf(stderr, "assert %d: %s, %s\n", __LINE__, curr_test, #e);       \
-        mt_disable_print();                                                    \
         mt_fail_flag = 1;                                                      \
         mt_test_status = -1;                                                   \
         return;                                                                \
@@ -106,9 +79,7 @@
     ++mt_total_asserts;                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        mt_allow_print();                                                      \
         fprintf(stderr, "assert %d: %s, %s\n", __LINE__, curr_test, #e);       \
-        mt_disable_print();                                                    \
         mt_fail_flag = 1;                                                      \
         mt_test_status = -1;                                                   \
     } else                                                                     \

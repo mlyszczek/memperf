@@ -4,6 +4,9 @@ memperf_SOURCES = src/bench.c \
 	src/opts.c \
 	src/utils.c
 
+LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+	$(top_srcdir)/tap-driver.sh
+
 check_PROGRAMS = tests
 tests_CFLAGS = -DTESTS -Wno-unused-value
 TESTS = $(check_PROGRAMS)

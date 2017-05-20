@@ -26,9 +26,6 @@
     int mt_fail_flag = 0;                                                      \
     int mt_test_status;                                                        \
     int mt_total_tests = 0;                                                    \
-    int mt_succed_tests = 0;                                                   \
-    int mt_total_asserts = 0;                                                  \
-    int mt_succed_asserts = 0
 
 
 /* ==========================================================================
@@ -40,15 +37,12 @@
     curr_test = #f;                                                            \
     mt_test_status = 0;                                                        \
     ++mt_total_tests;                                                          \
-    fprintf(stdout, "test %-71s", curr_test);                                  \
     f();                                                                       \
     if (mt_test_status != 0)                                                   \
-        fprintf(stdout, "[NK]\n");                                             \
+        fprintf(stdout, "not ok %d - %s\n", mt_total_tests, curr_test);        \
     else                                                                       \
-    {                                                                          \
-        fprintf(stdout, "[OK]\n");                                             \
-        ++mt_succed_tests;                                                     \
-    } } while(0)
+        fprintf(stdout, "ok %d - %s\n", mt_total_tests, curr_test);            \
+    } while(0)
 
 
 /* ==========================================================================
@@ -58,15 +52,13 @@
 
 
 #define mt_assert(e) do {                                                      \
-    ++mt_total_asserts;                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        fprintf(stderr, "assert %d: %s, %s\n", __LINE__, curr_test, #e);       \
+        fprintf(stderr, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
         mt_fail_flag = 1;                                                      \
         mt_test_status = -1;                                                   \
         return;                                                                \
-    }                                                                          \
-    ++mt_succed_asserts; } while (0)
+    } } while (0)
 
 
 /* ==========================================================================
@@ -76,14 +68,12 @@
 
 
 #define mt_fail(e) do {                                                        \
-    ++mt_total_asserts;                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        fprintf(stderr, "assert %d: %s, %s\n", __LINE__, curr_test, #e);       \
+        fprintf(stderr, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
         mt_fail_flag = 1;                                                      \
         mt_test_status = -1;                                                   \
-    } else                                                                     \
-        ++mt_succed_asserts; } while(0)
+    } } while(0)
 
 
 /* ==========================================================================
@@ -93,7 +83,5 @@
 
 
 #define mt_return() do {                                                       \
-    printf("summary: %d/%d tests passed, %d/%d asserts passed\n",              \
-         mt_succed_tests, mt_total_tests, mt_succed_asserts, mt_total_asserts);\
+    fprintf(stdout, "1..%d\n", mt_total_tests);                                \
     return mt_fail_flag; } while(0)
-

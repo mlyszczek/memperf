@@ -68,8 +68,9 @@ byte by byte, a simple for loop is used
 
 .TP
 \fB\-c\fR \fIclock\fR
-Clock to use to perform time measurement (default \fBCLOCK_REALTIME\fR if POSIX
-is enabled, or \fBclock_t\fR when there is no POSIX)
+Clock to use to perform time measurement (default \fBCLOCK_REALTIME\fR if
+\fBclock_gettime\fR is available in the system or or \fBclock_t\fR when it is
+not)
 
 .RS
 .TP

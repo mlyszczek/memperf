@@ -1,0 +1,92 @@
+.TH "MEMPERF" "1" "20 May 2017 (v0.0.1)" "bofc.pl"
+
+.SH "NAME"
+\fBmemperf\fR \- memory performance tool
+
+.SH "SYNOPSIS"
+
+\fBmemperf\fR [ \fB\-h\fR | \fB\-v\fR | \fIoptions\fR ]
+
+.SH "OPTIONS"
+All options that takes parameters must be passed without spaces. For example,
+to set memory block, you should call it like \fB\-b10M\fR as \fB\-b 10M\fR is
+invalid.
+
+.TP
+\fB\-h\fR
+Prints short help on stdout and exits
+
+.TP
+\fB\-v\fR
+Prints version number on stdout and exits
+
+.PP
+Options \fB\-b\fR, \fB\-r\fR and \fB\-l\fR accept number of bytes as a
+parameters.  jedec format can be used, that is one can pass \fB\-b1024\fR, which
+will be equivalent to \fB\-b1K\fR. Another possible values can be \fB\-r1G\fR,
+\fB-l15M\fR and \fB-b12345K\fR. 1K equals 1024 bytes.
+
+.TP
+\fB\-b\fR \fIblock_size\fR
+Size of a single block of memory that will be copied in a burst without any
+disturbace. Program will allocate 2 * \fIblock_size\fR of memory that will be
+used to perform memory operations (default 16K)
+
+.TP
+\fB\-r\fR \fIreport_size\fR
+Each time When at least \fIreport_size\fR bytes is copied, program will display
+report with bytes copied, time used to copy data and bandwidth information.
+Note that program can actually copy more bytes that set in \fIreport_size\fR
+depending on the value in \fIblock_size\fR (default 100M)
+
+.TP
+\fB\-l\fR \fIcache_size\fR
+Size of the l3 cpu cache. Each time \fIblock_size\fR is copied, application
+will try to invalidate CPU cache so it does not interfere with benchmark. For
+this, application needs to know the CPU cache size. If value is too low, memory
+copy may be performed in cache making memory bandwith to be bigger than in it
+is, setting this value too big will significally increase time neede to perform
+benchmark. This copy is of course not counted (default 1M)
+
+.TP
+\fB\-i\fR \fIintervals\fR
+Number of test inervals. Basically this defines how many reports will be printed.
+
+.TP
+\fB\-m\fR \fImethod\fR
+Method to use to copy memory (default memcpy)
+
+.RS
+.TP
+\fBmemcpy\fR
+builtin memcpy function is used
+
+.TP
+\fBbbb\fR
+byte by byte, a simple for loop is used
+.RE
+
+.TP
+\fB\-c\fR \fIclock\fR
+Clock to use to perform time measurement (default \fBCLOCK_REALTIME\fR if POSIX
+is enabled, or \fBclock_t\fR when there is no POSIX)
+
+.RS
+.TP
+\fBrealtime\fR
+POSIX \fBCLOCK_REALTIME\fR will be used. As \fBCLOCK_REALTIME\fR can alter
+itself (forward or backward), tests with this clock should be performed only
+when it is sure, that time won\'t be changed. The reason to use this instead of
+\fBCLOCK_MONOTONIC\fR is that \fBCLOCK_REALTIME\fR is mandatory and
+\fBCLOCK_MONOTONIC\fR is an optional extension.
+
+.TP
+\fBclock\fR
+C89 standard \fBclock_t\fR is used. If you want to build
+\fBmemperf\fR for very minimalistic systems that implements only c89 libc, then
+you are stuck with this clock. Its resolution may vary from system to system,
+which may lead to bad measurements.
+.RE
+
+.SH AUTHOR
+Michał Łyszczek <michal.lyszczek@bofc.pl>

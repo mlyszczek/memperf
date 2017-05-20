@@ -3,7 +3,13 @@
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
    ========================================================================== */
 
-/* ==== mtest version v0.0.1 ================================================ */
+
+/* ==== mtest version v0.1.0 ================================================ */
+
+
+/* ==========================================================================
+    Tests uses simple TAP output format (http://testanything.org)
+   ========================================================================== */
 
 
 /* ==== include files ======================================================= */
@@ -23,9 +29,9 @@
 
 #define mt_defs()                                                              \
     const char *curr_test;                                                     \
-    int mt_fail_flag = 0;                                                      \
     int mt_test_status;                                                        \
     int mt_total_tests = 0;                                                    \
+    int mt_total_failed = 0
 
 
 /* ==========================================================================
@@ -39,7 +45,10 @@
     ++mt_total_tests;                                                          \
     f();                                                                       \
     if (mt_test_status != 0)                                                   \
+    {                                                                          \
         fprintf(stdout, "not ok %d - %s\n", mt_total_tests, curr_test);        \
+        ++mt_total_failed;                                                     \
+    }                                                                          \
     else                                                                       \
         fprintf(stdout, "ok %d - %s\n", mt_total_tests, curr_test);            \
     } while(0)
@@ -54,8 +63,7 @@
 #define mt_assert(e) do {                                                      \
     if (!(e))                                                                  \
     {                                                                          \
-        fprintf(stderr, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
-        mt_fail_flag = 1;                                                      \
+        fprintf(stdout, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
         mt_test_status = -1;                                                   \
         return;                                                                \
     } } while (0)
@@ -70,18 +78,19 @@
 #define mt_fail(e) do {                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        fprintf(stderr, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
-        mt_fail_flag = 1;                                                      \
+        fprintf(stdout, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
         mt_test_status = -1;                                                   \
     } } while(0)
 
 
 /* ==========================================================================
-    prints tests summary and returns with 0 if all tests have passed, or -1
-    when at least one test has failed
+    prints test plan, in format 1..<number_of_test_run>. If all tests have
+    passed, macro will return current function with code 0, else it returns
+    number of failed tests. If number of failed tests exceeds 254, then 254
+    will be returned
    ========================================================================== */
 
 
 #define mt_return() do {                                                       \
     fprintf(stdout, "1..%d\n", mt_total_tests);                                \
-    return mt_fail_flag; } while(0)
+    return mt_total_failed > 254 ? 254 : mt_total_failed; } while(0)

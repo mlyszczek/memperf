@@ -6,6 +6,7 @@ memperf_SOURCES = src/bench.c \
 
 check_PROGRAMS = tests
 tests_CFLAGS = -DTESTS -Wno-unused-value
+TESTS = $(check_PROGRAMS)
 tests_SOURCES = src/bench.c \
 	src/opts.c \
 	src/utils.c \

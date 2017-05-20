@@ -357,7 +357,7 @@ void ts_add_diff_clock_multi(void)
    ========================================================================== */
 
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
 void ts_new_realtime(void)
 {
     void *tm;
@@ -721,7 +721,7 @@ void opts_parse_default_all(void)
     mt_fail(opts.method == METHOD_MEMCPY);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     mt_fail(opts.clock == CLK_REALTIME);
 #else
     mt_fail(opts.clock == CLK_CLOCK);
@@ -811,7 +811,7 @@ void opts_parse_opt_b_bytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -846,7 +846,7 @@ void opts_parse_opt_b_kbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -881,7 +881,7 @@ void opts_parse_opt_b_mbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -916,7 +916,7 @@ void opts_parse_opt_b_gbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1007,7 +1007,7 @@ void opts_parse_opt_r_bytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1042,7 +1042,7 @@ void opts_parse_opt_r_kbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1077,7 +1077,7 @@ void opts_parse_opt_r_mbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1112,7 +1112,7 @@ void opts_parse_opt_r_gbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1202,7 +1202,7 @@ void opts_parse_opt_l_bytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == i);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1237,7 +1237,7 @@ void opts_parse_opt_l_kbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == i * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1272,7 +1272,7 @@ void opts_parse_opt_l_mbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == i * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1307,7 +1307,7 @@ void opts_parse_opt_l_gbytes(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == i * 1024 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1342,7 +1342,7 @@ void opts_parse_opt_i(void)
         mt_fail(opts.method == METHOD_MEMCPY);
         mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-    #ifdef HAVE_CLOCK_GETTIME
+    #if HAVE_CLOCK_GETTIME
         mt_fail(opts.clock == CLK_REALTIME);
     #else
         mt_fail(opts.clock == CLK_CLOCK);
@@ -1404,7 +1404,7 @@ void opts_parse_opt_m(void)
     mt_fail(opts.method == METHOD_MEMCPY);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     mt_fail(opts.clock == CLK_REALTIME);
 #else
     mt_fail(opts.clock == CLK_CLOCK);
@@ -1422,7 +1422,7 @@ void opts_parse_opt_m(void)
     mt_fail(opts.method == METHOD_BBB);
     mt_fail(opts.cache_size == 1 * 1024 * 1024);
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     mt_fail(opts.clock == CLK_REALTIME);
 #else
     mt_fail(opts.clock == CLK_CLOCK);
@@ -1478,7 +1478,7 @@ void opts_parse_opt_c(void)
 
     opts_free(argc, argv);
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     argv = str2opts("-crealtime", &argc);
     opts_parse(argc, argv);
 
@@ -1603,7 +1603,7 @@ void opts_parse_syntax_error(void)
 
 int main(void)
 {
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     mt_run(ts_new_realtime);
     mt_run(ts_realtime);
     mt_run(ts_reset_realtime);

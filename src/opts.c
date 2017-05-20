@@ -54,7 +54,7 @@ static void opts_reset(void)
     opts.method = METHOD_MEMCPY;
     opts.cache_size = 1 * 1024 * 1024;
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     opts.clock = CLK_REALTIME;
 #else
     opts.clock = CLK_CLOCK;
@@ -116,7 +116,7 @@ static void opts_print_help(void)
 "\tbbb          byte by byte copy, simple for loop\n"
 "\n"
 "clocks:\n"
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
 "\trealtime     posix CLOCK_REALTIME clock is used\n"
 #endif
 "\tclock        clock_t is used\n"
@@ -260,7 +260,7 @@ int opts_parse
         case 'c':
             HAS_OPTARG();
 
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
             if (strcmp(optarg, "realtime") == 0)
             {
                 opts.clock = CLK_REALTIME;

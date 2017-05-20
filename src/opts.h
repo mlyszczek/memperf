@@ -13,7 +13,7 @@
 
 enum clock
 {
-#ifdef HAVE_CLOCK_GETTIME
+#if HAVE_CLOCK_GETTIME
     CLK_REALTIME,
 #endif
     CLK_CLOCK

@@ -20,7 +20,7 @@ void ts(void *tm);
 void ts_add_diff(void *taken, void *start, void *finish);
 void *ts_new(void);
 void ts_reset(void *tm);
-unsigned long ts2ns(void *tm);
+unsigned long ts2us(void *tm);
 void bytes2jedec(float bytes, struct jedec *jedec);
 
 #endif

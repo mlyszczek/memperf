@@ -57,25 +57,25 @@ static void bench_report
 {
     struct jedec   jd_bps;     /* bytes per second in jedec format */
     struct jedec   jd_copied;  /* number of bytes copied in jedec format */
-    unsigned long  ns;         /* time taken copying data in nanoseconds */
+    unsigned long  us;         /* time taken copying data in microseconds */
     float          bps;        /* bytes per second rate */
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    if ((ns = ts2ns(taken)) == 0)
+    if ((us = ts2us(taken)) == 0)
     {
-        ns = 1;
+        us = 1;
     }
 
-    bps = copied / ns;
+    bps = copied / us;
     bps *= 1000000;
 
     bytes2jedec(bps, &jd_bps);
     bytes2jedec(copied, &jd_copied);
 
-    printf("copied %5lu %cB, in %5lu ns, rate %5lu %cB/s\n",
+    printf("copied %5lu %cB, in %5lu us, rate %5lu %cB/s\n",
            jd_copied.val,
            jd_copied.pre,
-           ns,
+           us,
            jd_bps.val,
            jd_bps.pre);
 }

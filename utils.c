@@ -185,14 +185,14 @@ void ts_add_diff
 
 
 /* ==========================================================================
-    function converts 'tm' object into nanoseconds. Check ts() for more
+    function converts 'tm' object into microseconds. Check ts() for more
     information regarding undefinied behaviour that may occur
    ========================================================================== */
 
 
-unsigned long ts2ns
+unsigned long ts2us
 (
-    void  *tm  /* time to convert to nanoseconds */
+    void  *tm  /* time to convert to microseconds */
 )
 {
 #ifdef POSIX

@@ -11,3 +11,4 @@ tests
 test-suite.log
 tests.log
 tests.trs
+autom4te.cache

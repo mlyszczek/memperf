@@ -14,8 +14,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "config.h"
 #include "opts.h"
-
 
 /* ==== Public functions ==================================================== */
 
@@ -32,7 +32,7 @@ void ts
     void  *tm  /* pointer to time where to store current timestamp */
 )
 {
-#ifdef POSIX
+#if HAVE_CLOCK_GETTIME
     if (opts.clock == CLK_REALTIME)
     {
         /*
@@ -65,7 +65,7 @@ void ts
 
 void *ts_new(void)
 {
-#ifdef POSIX
+#if HAVE_CLOCK_GETTIME
     if (opts.clock == CLK_REALTIME)
     {
         return malloc(sizeof(struct timespec));
@@ -95,7 +95,7 @@ void ts_reset
     void  *tm  /* time object to zero */
 )
 {
-#ifdef POSIX
+#if HAVE_CLOCK_GETTIME
     if (opts.clock == CLK_REALTIME)
     {
         memset(tm, 0, sizeof(struct timespec));
@@ -128,7 +128,7 @@ void ts_add_diff
     void  *finish  /* second point in time to differate */
 )
 {
-#ifdef POSIX
+#if HAVE_CLOCK_GETTIME
     if (opts.clock == CLK_REALTIME)
     {
         struct timespec   d;  /* diff between finish and start */
@@ -195,7 +195,7 @@ unsigned long ts2us
     void  *tm  /* time to convert to microseconds */
 )
 {
-#ifdef POSIX
+#if HAVE_CLOCK_GETTIME
     if (opts.clock == CLK_REALTIME)
     {
         struct timespec  *t = tm;

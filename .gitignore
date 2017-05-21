@@ -2,3 +2,13 @@
 memperf
 memperf-tests
 *.o
+Makefile
+config.h
+config.log
+config.status
+stamp-h1
+tests
+test-suite.log
+tests.log
+tests.trs
+autom4te.cache

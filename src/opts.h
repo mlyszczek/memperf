@@ -1,18 +1,19 @@
- /*$2
- ===============================================================================
-    Licensed under BSD 2-clause license. See LICENSE file for more information.
+/* ==========================================================================
+    Licensed under BSD 2clause license. See LICENSE file for more information
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
- ===============================================================================
- */
+   ========================================================================== */
+
 
 #ifndef OPTS_H
 #define OPTS_H 1
 
 #include <stddef.h>
 
+#include "config.h"
+
 enum clock
 {
-#ifdef POSIX
+#if HAVE_CLOCK_GETTIME
     CLK_REALTIME,
 #endif
     CLK_CLOCK

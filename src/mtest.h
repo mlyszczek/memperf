@@ -3,36 +3,19 @@
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
    ========================================================================== */
 
-/* ==== mtest version v0.0.1 ================================================ */
+
+/* ==== mtest version v0.1.0 ================================================ */
+
+
+/* ==========================================================================
+    Tests uses simple TAP output format (http://testanything.org)
+   ========================================================================== */
 
 
 /* ==== include files ======================================================= */
 
 
 #include <stdio.h>
-
-/* ==== private macros ====================================================== */
-
-
-/* ==========================================================================
-    all printf will be able to print back to stderr and stdout
-   ========================================================================== */
-
-
-#define mt_allow_print()                                                       \
-    freopen("/dev/tty", "w", stderr);                                          \
-    freopen("/dev/tty", "w", stdout)
-
-
-/* ==========================================================================
-    when this macro is called, all printing to stderr and stdout will have no
-    effect. To reenable printing, call mt_allow_print
-   ========================================================================== */
-
-
-#define mt_disable_print()                                                     \
-    fclose(stderr);                                                            \
-    fclose(stdout)
 
 
 /* ==== public macros ======================================================= */
@@ -46,12 +29,9 @@
 
 #define mt_defs()                                                              \
     const char *curr_test;                                                     \
-    int mt_fail_flag = 0;                                                      \
     int mt_test_status;                                                        \
     int mt_total_tests = 0;                                                    \
-    int mt_succed_tests = 0;                                                   \
-    int mt_total_asserts = 0;                                                  \
-    int mt_succed_asserts = 0
+    int mt_total_failed = 0
 
 
 /* ==========================================================================
@@ -63,17 +43,15 @@
     curr_test = #f;                                                            \
     mt_test_status = 0;                                                        \
     ++mt_total_tests;                                                          \
-    fprintf(stdout, "test %-71s", curr_test);                                  \
-    mt_disable_print();                                                        \
     f();                                                                       \
-    mt_allow_print();                                                          \
     if (mt_test_status != 0)                                                   \
-        fprintf(stdout, "[NK]\n");                                             \
-    else                                                                       \
     {                                                                          \
-        fprintf(stdout, "[OK]\n");                                             \
-        ++mt_succed_tests;                                                     \
-    } } while(0)
+        fprintf(stdout, "not ok %d - %s\n", mt_total_tests, curr_test);        \
+        ++mt_total_failed;                                                     \
+    }                                                                          \
+    else                                                                       \
+        fprintf(stdout, "ok %d - %s\n", mt_total_tests, curr_test);            \
+    } while(0)
 
 
 /* ==========================================================================
@@ -83,17 +61,12 @@
 
 
 #define mt_assert(e) do {                                                      \
-    ++mt_total_asserts;                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        mt_allow_print();                                                      \
-        fprintf(stderr, "assert %d: %s, %s\n", __LINE__, curr_test, #e);       \
-        mt_disable_print();                                                    \
-        mt_fail_flag = 1;                                                      \
+        fprintf(stdout, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
         mt_test_status = -1;                                                   \
         return;                                                                \
-    }                                                                          \
-    ++mt_succed_asserts; } while (0)
+    } } while (0)
 
 
 /* ==========================================================================
@@ -103,26 +76,21 @@
 
 
 #define mt_fail(e) do {                                                        \
-    ++mt_total_asserts;                                                        \
     if (!(e))                                                                  \
     {                                                                          \
-        mt_allow_print();                                                      \
-        fprintf(stderr, "assert %d: %s, %s\n", __LINE__, curr_test, #e);       \
-        mt_disable_print();                                                    \
-        mt_fail_flag = 1;                                                      \
+        fprintf(stdout, "# assert %d: %s, %s\n", __LINE__, curr_test, #e);     \
         mt_test_status = -1;                                                   \
-    } else                                                                     \
-        ++mt_succed_asserts; } while(0)
+    } } while(0)
 
 
 /* ==========================================================================
-    prints tests summary and returns with 0 if all tests have passed, or -1
-    when at least one test has failed
+    prints test plan, in format 1..<number_of_test_run>. If all tests have
+    passed, macro will return current function with code 0, else it returns
+    number of failed tests. If number of failed tests exceeds 254, then 254
+    will be returned
    ========================================================================== */
 
 
 #define mt_return() do {                                                       \
-    printf("summary: %d/%d tests passed, %d/%d asserts passed\n",              \
-         mt_succed_tests, mt_total_tests, mt_succed_asserts, mt_total_asserts);\
-    return mt_fail_flag; } while(0)
-
+    fprintf(stdout, "1..%d\n", mt_total_tests);                                \
+    return mt_total_failed > 254 ? 254 : mt_total_failed; } while(0)

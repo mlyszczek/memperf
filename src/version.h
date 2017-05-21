@@ -6,7 +6,7 @@
 #ifndef MEMPERF_VERSION_H
 #define MEMPERF_VERSION_H 1
 
-#define VERSION "0.1.0"
+#include "config.h"
 
 #define APP_VERSION "memperf version v"VERSION
 

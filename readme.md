@@ -17,14 +17,18 @@ Compiling and Installing
 
 memperf uses automake, so compilation is pretty standard
 
+~~~{.sh}
 autoreconf -i
 ./configure
 make
 make install
+~~~
 
 tests can be run with
 
+~~~{.sh}
 make check
+~~~
 
 License
 =======

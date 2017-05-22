@@ -12,3 +12,12 @@ test-suite.log
 tests.log
 tests.trs
 autom4te.cache
+Makefile.in
+aclocal.m4
+compile
+config.h.in
+configure
+depcomp
+install-sh
+missing
+test-driver

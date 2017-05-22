@@ -3,6 +3,7 @@
     Author: Michał Łyszczek <michal.lyszczek@bofc.pl>
    ========================================================================== */
 
+
 /* ==== Include files ======================================================= */
 
 
@@ -13,11 +14,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #include "utils.h"
-#include "version.h"
 
 
 /* ==== Private macros ====================================================== */
+
+
+/* ==========================================================================
+    Macro checks is  option  being  parsed  has  argument,  if  not,  forces
+    function to return with code -2
+   ========================================================================== */
 
 
 #define HAS_OPTARG()                                                    \
@@ -63,8 +70,8 @@ static void opts_reset(void)
 
 
 /* ==========================================================================
-    returns argument from 'argv'. If passed 'argv' doesn't hold valid argument
-    -1 will be returned.
+    returns argument from 'argv'.   If  passed  'argv'  doesn't  hold  valid
+    argument -1 will be returned.
    ========================================================================== */
 
 
@@ -123,14 +130,15 @@ static void opts_print_help(void)
 );
 }
 
+
 /* ==== Public functions ==================================================== */
 
 
 /* ==========================================================================
-    resets global 'opts' object with default values, and parses input options
-    overwritting default settings. If help (-h) or version (-v) option is found
-    anywhere in the argv, program prints what first was found and returns with
-    code 1.
+    resets global 'opts'  object  with  default  values,  and  parses  input
+    options overwritting default settings.  If help  (-h)  or  version  (-v)
+    option is found anywhere in the argv,  program  prints  what  first  was
+    found and  returns  with code 1.
 
     returns:
              1      -h or -v was passed
@@ -188,7 +196,7 @@ int opts_parse
         switch (opt)
         {
         case 'v':
-            printf(APP_VERSION "\n");
+            printf(PACKAGE_STRING "\n");
             return 1;
 
         case 'h':

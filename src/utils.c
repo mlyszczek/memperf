@@ -21,9 +21,9 @@
 
 
 /* ==========================================================================
-    function returns timestamp in 'tm' location depending on the clock set in
-    opts.h. If clock option set doesn't match passed 'tm' object, (like clock_t
-    for CLK_CLOCK) behaviour is undefinied
+    function returns timestamp in 'tm' location depending on the  clock  set
+    in opts.h.  If clock option set doesn't match passed 'tm' object,  (like
+    clock_t for CLK_CLOCK) behaviour is undefinied
    ========================================================================== */
 
 
@@ -58,7 +58,7 @@ void ts
 
 
 /* ==========================================================================
-    creates new object for timestamp, returned pointer should be passed to
+    creates new object for timestamp, returned pointer should be  passed  to
     free() when it is no longer needed
    ========================================================================== */
 
@@ -85,7 +85,7 @@ void *ts_new(void)
 
 
 /* ==========================================================================
-    sets pointer to zero value. Check ts() for more information regarding
+    sets pointer to zero value.  Check ts() for more  information  regarding
     undefinied behaviour that may occur
    ========================================================================== */
 
@@ -115,9 +115,9 @@ void ts_reset
 
 
 /* ==========================================================================
-    function adds difference between 'finish' and 'start' to 'tm'. Simply put
-    it is tm += finish - start; Check ts() for more information regarding
-    undefinied behaviour that may occur
+    function adds difference between 'finish' and 'start' to  'tm'.   Simply
+    put it is tm  +=  finish  -  start;  Check  ts()  for  more  information
+    regarding undefinied behaviour that may occur
    ========================================================================== */
 
 
@@ -185,8 +185,8 @@ void ts_add_diff
 
 
 /* ==========================================================================
-    function converts 'tm' object into microseconds. Check ts() for more
-    information regarding undefinied behaviour that may occur
+    function converts 'tm' object into microseconds.  Check  ts()  for  more
+    information   regarding   undefinied   behaviour    that    may    occur
    ========================================================================== */
 
 

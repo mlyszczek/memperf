@@ -56,8 +56,8 @@ static char *sdup
 
 
 /* ==========================================================================
-    returns heap allocated copy of 's' with maximum size of 'l'. Returned string
-    will be always null terminated.
+    returns heap allocated copy of 's' with maximum size of  'l'.   Returned
+    string will be always null terminated.
    ========================================================================== */
 
 
@@ -87,9 +87,10 @@ static char *sndup
 
 
 /* ==========================================================================
-    converts option string into argc,argv pair. ie, "-a -b -c10 -darg" will be
-    converted into array of 5 strings (as first argument is always program name,
-    here we simulate it by always putting "memperf" as first option):
+    converts option string into argc,argv pair.  ie, "-a -b -c10 -darg" will
+    be converted into array of  5  strings  (as  first  argument  is  always
+    program name, here we simulate it by always putting "memperf"  as  first
+    option):
 
     argc == 5
     argv =
@@ -218,6 +219,7 @@ static void opts_free
 
 
 /* ==== Tests functions ===================================================== */
+
 
 /* ==== utils.c tests ======================================================= */
 

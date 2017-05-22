@@ -85,7 +85,7 @@ static void bench_report
 
 
 /* ==========================================================================
-    performs benchmark on pointers dst and src. dst and src can be heap or
+    performs benchmark on pointers dst and src.  dst and src can be heap  or
     stack allocated.
    ========================================================================== */
 

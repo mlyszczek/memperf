@@ -12,4 +12,6 @@ tests_SOURCES = src/bench.c \
 	src/utils.c \
 	src/tests.c
 
+LOG_DRIVER = $(top_srcdir)/tap-driver
+
 man1_MANS = memperf.1

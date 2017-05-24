@@ -7,6 +7,8 @@
 /* ==== Include files ======================================================= */
 
 
+#include "config.h"
+#include "opts.h"
 #include "utils.h"
 
 #include <assert.h>
@@ -14,8 +16,6 @@
 #include <string.h>
 #include <time.h>
 
-#include "config.h"
-#include "opts.h"
 
 /* ==== Public functions ==================================================== */
 
